@@ -280,6 +280,7 @@ export function OrdersPage({
                 <th className="px-4 py-3 font-medium">Payment</th>
                 <th className="px-4 py-3 font-medium">Total</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">Rider</th>
                 <th className="px-4 py-3 font-medium">Date</th>
                 <th className="px-4 py-3 font-medium">Actions</th>
               </tr>
@@ -309,6 +310,16 @@ export function OrdersPage({
                       <td className="px-4 py-4 text-xs">{payment}</td>
                       <td className="px-4 py-4 font-semibold">{formatCurrency(total)}</td>
                       <td className="px-4 py-4"><StatusBadge status={o.statusLabel || o.status || "PENDING"} /></td>
+                      <td className="px-4 py-4">
+                        {o.riderName ? (
+                          <div className="flex items-center gap-1.5 font-medium text-foreground">
+                            <Bike className="h-4 w-4 text-primary shrink-0" />
+                            <span>{o.riderName}</span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Not Assigned</span>
+                        )}
+                      </td>
                       <td className="px-4 py-4 text-xs text-muted-foreground">{dateLabel}</td>
                       <td className="px-4 py-4"><OrderActions order={o} isPending={action.isPending} localDone={localDone} onView={() => setSelectedOrderId(o.id)} onAction={runOrderAction} /></td>
                     </tr>
