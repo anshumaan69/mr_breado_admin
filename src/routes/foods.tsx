@@ -47,11 +47,9 @@ export function FoodsPage({ title, source = "admin" }: { title: string; source?:
         breadcrumbs={[{ label: "Dashboard", to: "/" }, { label: "Menu Management" }, { label: title }]}
         actions={
           <>
-            {source !== "seller" && (
-              <button onClick={() => { setEditing(null); setShowForm(true); }} className="inline-flex items-center gap-1.5 rounded-md gradient-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-glow">
-                <Plus className="h-4 w-4" /> Add Item
-              </button>
-            )}
+            <button onClick={() => { setEditing(null); setShowForm(true); }} className="inline-flex items-center gap-1.5 rounded-md gradient-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-glow">
+              <Plus className="h-4 w-4" /> Add Item
+            </button>
             {source === "admin" && <button onClick={() => productsService.downloadTemplate()} className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium hover:bg-accent"><FileSpreadsheet className="h-4 w-4" />Template</button>}
             {source === "admin" && <button onClick={() => productsService.exportAdminProducts()} className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium hover:bg-accent"><Download className="h-4 w-4" />Export</button>}
           </>
@@ -218,21 +216,22 @@ export function FoodsPage({ title, source = "admin" }: { title: string; source?:
 function ModalForm({ open, onClose, form, setForm, onSave, editing, source }: any) {
   if (!open) return null;
   const isSeller = source === "seller";
+  const disabled = isSeller && !!editing;
   const set = (key: string, value: any) => setForm((s:any) => ({ ...s, [key]: value }));
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4">
       <div className="w-full max-w-4xl rounded-xl border border-border bg-card p-5 shadow-card">
         <h3 className="mb-4 text-lg font-semibold">{editing ? (isSeller ? "Edit Stock" : "Edit Food") : "Add Item"}</h3>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          <Field label="Title" value={form.title} onChange={(v:any)=>set("title", v)} disabled={isSeller} />
-          <Field label="Subtitle" value={form.subtitle} onChange={(v:any)=>set("subtitle", v)} disabled={isSeller} />
-          <Field label="Category" value={form.categoryName} onChange={(v:any)=>set("categoryName", v)} disabled={isSeller} />
-          <Field label="Food Type" value={form.foodType} onChange={(v:any)=>set("foodType", v)} disabled={isSeller} />
-          <Field label="Price" value={form.price} onChange={(v:any)=>set("price", v)} disabled={isSeller} />
-          <Field label="Discount Price" value={form.discountPrice} onChange={(v:any)=>set("discountPrice", v)} disabled={isSeller} />
+          <Field label="Title" value={form.title} onChange={(v:any)=>set("title", v)} disabled={disabled} />
+          <Field label="Subtitle" value={form.subtitle} onChange={(v:any)=>set("subtitle", v)} disabled={disabled} />
+          <Field label="Category" value={form.categoryName} onChange={(v:any)=>set("categoryName", v)} disabled={disabled} />
+          <Field label="Food Type" value={form.foodType} onChange={(v:any)=>set("foodType", v)} disabled={disabled} />
+          <Field label="Price" value={form.price} onChange={(v:any)=>set("price", v)} disabled={disabled} />
+          <Field label="Discount Price" value={form.discountPrice} onChange={(v:any)=>set("discountPrice", v)} disabled={disabled} />
           <Field label="Stock Quantity" value={form.stockQuantity} onChange={(v:any)=>set("stockQuantity", v)} />
           <label className="block text-sm font-medium">Quantity / Variant Type
-            <select value={form.variantType} onChange={(e:any)=>set("variantType", e.target.value)} disabled={isSeller} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 disabled:opacity-60">
+            <select value={form.variantType} onChange={(e:any)=>set("variantType", e.target.value)} disabled={disabled} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 disabled:opacity-60">
               <option value="STANDARD">Standard (Single Unit / Pieces)</option>
               <option value="PIZZA">Pizza (Sizes: Small, Medium, Large)</option>
               <option value="CAKE">Cake (Weights: 500gm, 1kg, 1.5kg, 2kg)</option>
@@ -240,31 +239,31 @@ function ModalForm({ open, onClose, form, setForm, onSave, editing, source }: an
           </label>
           {form.variantType === "PIZZA" && (
             <>
-              <Field label="Small Size Extra" value={form.smallSizeExtra} onChange={(v:any)=>set("smallSizeExtra", v)} disabled={isSeller} />
-              <Field label="Medium Size Extra" value={form.mediumSizeExtra} onChange={(v:any)=>set("mediumSizeExtra", v)} disabled={isSeller} />
-              <Field label="Large Size Extra" value={form.largeSizeExtra} onChange={(v:any)=>set("largeSizeExtra", v)} disabled={isSeller} />
+              <Field label="Small Size Extra" value={form.smallSizeExtra} onChange={(v:any)=>set("smallSizeExtra", v)} disabled={disabled} />
+              <Field label="Medium Size Extra" value={form.mediumSizeExtra} onChange={(v:any)=>set("mediumSizeExtra", v)} disabled={disabled} />
+              <Field label="Large Size Extra" value={form.largeSizeExtra} onChange={(v:any)=>set("largeSizeExtra", v)} disabled={disabled} />
             </>
           )}
           {form.variantType === "CAKE" && (
             <>
-              <Field label="Cake 500gm Extra" value={form.cake500gmExtra} onChange={(v:any)=>set("cake500gmExtra", v)} disabled={isSeller} />
-              <Field label="Cake 1kg Extra" value={form.cake1kgExtra} onChange={(v:any)=>set("cake1kgExtra", v)} disabled={isSeller} />
-              <Field label="Cake 1.5kg Extra" value={form.cake15kgExtra} onChange={(v:any)=>set("cake15kgExtra", v)} disabled={isSeller} />
-              <Field label="Cake 2kg Extra" value={form.cake2kgExtra} onChange={(v:any)=>set("cake2kgExtra", v)} disabled={isSeller} />
-              <Field label="Cake Message Charge" value={form.cakeMessageCharge} onChange={(v:any)=>set("cakeMessageCharge", v)} disabled={isSeller} />
+              <Field label="Cake 500gm Extra" value={form.cake500gmExtra} onChange={(v:any)=>set("cake500gmExtra", v)} disabled={disabled} />
+              <Field label="Cake 1kg Extra" value={form.cake1kgExtra} onChange={(v:any)=>set("cake1kgExtra", v)} disabled={disabled} />
+              <Field label="Cake 1.5kg Extra" value={form.cake15kgExtra} onChange={(v:any)=>set("cake15kgExtra", v)} disabled={disabled} />
+              <Field label="Cake 2kg Extra" value={form.cake2kgExtra} onChange={(v:any)=>set("cake2kgExtra", v)} disabled={disabled} />
+              <Field label="Cake Message Charge" value={form.cakeMessageCharge} onChange={(v:any)=>set("cakeMessageCharge", v)} disabled={disabled} />
             </>
           )}
-          <label className="block text-sm font-medium">Image<input type="file" accept="image/*" onChange={(e:any) => set("image", e.target.files?.[0] ?? null)} disabled={isSeller} className="mt-1 w-full rounded-md border border-input px-3 py-2 disabled:opacity-60" /></label>
+          <label className="block text-sm font-medium">Image<input type="file" accept="image/*" onChange={(e:any) => set("image", e.target.files?.[0] ?? null)} disabled={disabled} className="mt-1 w-full rounded-md border border-input px-3 py-2 disabled:opacity-60" /></label>
         </div>
-        <label className="mt-3 block text-sm font-medium">Description<textarea value={form.description} onChange={(e)=>set("description", e.target.value)} disabled={isSeller} className="mt-1 min-h-24 w-full rounded-md border border-input px-3 py-2 disabled:opacity-60" /></label>
+        <label className="mt-3 block text-sm font-medium">Description<textarea value={form.description} onChange={(e)=>set("description", e.target.value)} disabled={disabled} className="mt-1 min-h-24 w-full rounded-md border border-input px-3 py-2 disabled:opacity-60" /></label>
         <div className="mt-4 grid gap-2 md:grid-cols-3">
-          <Toggle label="Veg" value={form.isVeg} onChange={(v:any)=>set("isVeg", v)} disabled={isSeller} />
-          <Toggle label="Available" value={form.isAvailable} onChange={(v:any)=>set("isAvailable", v)} disabled={isSeller} />
-          <Toggle label="Bestseller" value={form.isBestseller} onChange={(v:any)=>set("isBestseller", v)} disabled={isSeller} />
+          <Toggle label="Veg" value={form.isVeg} onChange={(v:any)=>set("isVeg", v)} disabled={disabled} />
+          <Toggle label="Available" value={form.isAvailable} onChange={(v:any)=>set("isAvailable", v)} disabled={disabled} />
+          <Toggle label="Bestseller" value={form.isBestseller} onChange={(v:any)=>set("isBestseller", v)} disabled={disabled} />
           {form.variantType === "CAKE" && (
             <>
-              <Toggle label="Cake Message" value={form.cakeMessageEnabled} onChange={(v:any)=>set("cakeMessageEnabled", v)} disabled={isSeller} />
-              <Toggle label="Custom Weight" value={form.customWeightEnabled} onChange={(v:any)=>set("customWeightEnabled", v)} disabled={isSeller} />
+              <Toggle label="Cake Message" value={form.cakeMessageEnabled} onChange={(v:any)=>set("cakeMessageEnabled", v)} disabled={disabled} />
+              <Toggle label="Custom Weight" value={form.customWeightEnabled} onChange={(v:any)=>set("customWeightEnabled", v)} disabled={disabled} />
             </>
           )}
         </div>

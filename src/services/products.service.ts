@@ -51,17 +51,13 @@ export const productsService = {
       method: "GET",
     }),
 
-  create: (payload: Record<string, unknown> | FormData, source: "seller" | "admin" = "admin") => {
-    if (source === "seller") {
-      throw new Error("Sellers are not allowed to create products");
-    }
-    return request<ProductResponse>({
-      url: isAdmin(source) ? endpoints.admin.mrBreado.products : endpoints.admin.products,
+  create: (payload: Record<string, unknown> | FormData, source: "seller" | "admin" = "admin") =>
+    request<ProductResponse>({
+      url: source === "seller" ? "/seller/products" : (isAdmin(source) ? endpoints.admin.mrBreado.products : endpoints.admin.products),
       method: "POST",
       data: toFormData(payload),
       headers: { "Content-Type": "multipart/form-data" },
-    });
-  },
+    }),
 
   update: (id: number | string, payload: Record<string, unknown> | FormData, source: "seller" | "admin" = "admin") => {
     if (source === "seller") {
